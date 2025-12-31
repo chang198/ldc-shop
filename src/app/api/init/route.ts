@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { migrate } from "drizzle-orm/vercel-postgres/migrator";
 import { NextResponse } from "next/server";
+import path from "path";
 
 export async function GET() {
     try {
