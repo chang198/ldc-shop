@@ -15,7 +15,7 @@ export default async function OrdersPage() {
     if (!session?.user) redirect('/api/auth/signin')
 
     const userOrders = await db.query.orders.findMany({
-        where: eq(orders.userId, session.user.id),
+        where: eq(orders.userId, session.user.id || ''),
         orderBy: [desc(orders.createdAt)]
     })
 
