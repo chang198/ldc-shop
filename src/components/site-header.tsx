@@ -24,8 +24,15 @@ export async function SiteHeader() {
             <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
                 <div className="flex gap-6 md:gap-10">
                     <Link href="/" className="flex items-center space-x-2">
-                        <ShoppingBag className="h-6 w-6" />
-                        <span className="inline-block font-bold">LDC Shop</span>
+                        import {Logo} from "@/components/icons/logo"
+
+                        // ... imports ...
+
+                        // Inside component:
+                        <Link href="/" className="flex items-center space-x-2">
+                            <Logo className="h-8 w-8 text-primary" />
+                            <span className="inline-block font-bold text-xl tracking-tight">LDC Shop</span>
+                        </Link>
                     </Link>
                     {isAdmin && (
                         <Link href="/admin" className="flex items-center text-sm font-medium text-muted-foreground hover:text-primary">
