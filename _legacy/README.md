@@ -1,5 +1,10 @@
 # LDC Store - Linux DO 积分商城
 
+> 📁 **请先进入此目录再执行后续命令：**
+> ```bash
+> cd _legacy
+> ```
+
 基于 **Cloudflare Workers** + **D1 Database** 构建的 Serverless 虚拟商品自动发货系统。专为 Linux DO 生态设计，支持 **Linux DO Credit** 积分支付和 **Linux DO Connect** (OIDC) 登录。
 
 ## ✨ 特性
