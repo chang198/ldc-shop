@@ -44,12 +44,13 @@ export async function createOrder(productId: string, email?: string) {
     cookieStore.set('ldc_pending_order', orderId, { secure: true, path: '/', sameSite: 'lax' })
 
     // 4. Generate Pay Params
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
     const payParams: Record<string, any> = {
         pid: process.env.MERCHANT_ID!,
         type: 'epay',
         out_trade_no: orderId,
-        notify_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://ldc.chatgpt.org.uk'}/api/notify`,
-        return_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://ldc.chatgpt.org.uk'}/callback`, // or just return to home/history
+        notify_url: `${baseUrl}/api/notify`,
+        return_url: `${baseUrl}/callback`, // or just return to home/history
         name: product.name,
         money: Number(product.price).toFixed(2),
         sign_type: 'MD5'
