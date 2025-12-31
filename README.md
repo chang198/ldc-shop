@@ -10,7 +10,7 @@ A robust, serverless virtual goods shop built with **Next.js 16**, **Vercel Post
 
 ## 🚀 One-Click Deploy
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fchatgptuk%2Fldc-shop&env=OAUTH_CLIENT_ID,OAUTH_CLIENT_SECRET,MERCHANT_ID,MERCHANT_KEY,ADMIN_USERS,NEXTAUTH_SECRET,NEXT_PUBLIC_APP_URL&envDescription=Required%20Environment%20Variables.&project-name=ldc-shop&repository-name=ldc-shop&demo-title=LDC%20Shop&demo-description=Virtual%20Goods%20Shop&stores=[{"type":"postgres"}])
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fchatgptuk%2Fldc-shop&env=OAUTH_CLIENT_ID,OAUTH_CLIENT_SECRET,MERCHANT_ID,MERCHANT_KEY,ADMIN_USERS,NEXTAUTH_SECRET,NEXT_PUBLIC_APP_URL,AUTH_TRUST_HOST&envDescription=Required%20Environment%20Variables.&project-name=ldc-shop&repository-name=ldc-shop&demo-title=LDC%20Shop&demo-description=Virtual%20Goods%20Shop&stores=[{"type":"postgres"}])
 
 Click the button above to deploy your own instance to Vercel.
 
@@ -18,11 +18,13 @@ Click the button above to deploy your own instance to Vercel.
 
 During the deployment process, you will be asked for the following environment variables:
 
-1.  **NEXTAUTH_SECRET**: A random string for encryption. You can generate one via `openssl rand -base64 32` or just type a long random string.
+1.  **NEXTAUTH_SECRET**: A random string for encryption. Type a long random string.
 2.  **Linux DO Credentials**:
     *   `OAUTH_CLIENT_ID` / `OAUTH_CLIENT_SECRET`: Get from [connect.linux.do](https://connect.linux.do).
+    *   **Callback URL** in Linux DO Connect should be: `https://YOUR_DOMAIN.vercel.app/api/auth/callback/linuxdo` (or your custom domain).
     *   `MERCHANT_ID` / `MERCHANT_KEY`: Get from [credit.linux.do](https://credit.linux.do).
 3.  **ADMIN_USERS**: Your Linux DO username (e.g., `chatgpt,admin`).
+4.  **AUTH_TRUST_HOST**: Set to `true` to ensure authentication works correctly on Vercel.
 
 The database (Vercel Postgres) will be automatically provisioned and linked.
 
