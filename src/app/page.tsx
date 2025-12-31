@@ -7,7 +7,22 @@ import { Button } from "@/components/ui/button";
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const products = await getProducts();
+  let products = [];
+  try {
+    products = await getProducts();
+  } catch (error: any) {
+    if (error.message?.includes('relation "products" does not exist')) {
+      console.log("Database initialized check: Table missing. Running migrations...");
+      const { migrate } = await import("drizzle-orm/vercel-postgres/migrator");
+      const { db } = await import("@/lib/db");
+      const path = await import("path");
+
+      await migrate(db, { migrationsFolder: path.join(process.cwd(), "lib/db/migrations") });
+      products = await getProducts();
+    } else {
+      throw error;
+    }
+  }
 
   return (
     <main className="container py-8 md:py-12">
