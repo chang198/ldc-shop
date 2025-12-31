@@ -1,5 +1,13 @@
 # LDC Shop (Next.js Edition)
 
+> ⚠️ **警告 / WARNING** ⚠️
+> 
+> **本项目目前正在测试中，代码尚未稳定，请勿部署！**
+> 
+> **This project is currently under testing. The code is NOT stable. DO NOT deploy!**
+
+---
+
 A robust, serverless virtual goods shop built with **Next.js 16**, **Vercel Postgres**, **Shadcn UI**, and **Linux DO Connect**.
 
 ## ✨ Features
