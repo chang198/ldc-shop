@@ -7,7 +7,8 @@ import { eq, sql } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
 
 // Check Admin Helper
-async function checkAdmin() {
+// Check Admin Helper
+export async function checkAdmin() {
     const session = await auth()
     const user = session?.user
     if (!user || !user.username || !process.env.ADMIN_USERS?.split(',').includes(user.username)) {
