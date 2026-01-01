@@ -54,17 +54,17 @@ async function processNotify(params: Record<string, any>) {
                     // Atomic update to claim card (Postgres only)
                     // Finds the first unused card, locks it, and marks it as used
                     const result = await tx.execute(sql`
-                    UPDATE cards
-                    SET is_used = true, used_at = NOW()
-                    WHERE id = (
-                        SELECT id
-                        FROM cards
-                        WHERE product_id = ${order.productId} AND is_used = false
-                        LIMIT 1
-                        FOR UPDATE SKIP LOCKED
-                    )
-                    RETURNING card_key
-                `);
+                        UPDATE cards
+                        SET is_used = true, used_at = NOW()
+                        WHERE id = (
+                            SELECT id
+                            FROM cards
+                            WHERE product_id = ${order.productId} AND is_used = false
+                            LIMIT 1
+                            FOR UPDATE SKIP LOCKED
+                        )
+                        RETURNING card_key
+                    `);
 
                     const cardKey = result.rows[0]?.card_key as string | undefined;
 
@@ -91,42 +91,43 @@ async function processNotify(params: Record<string, any>) {
                 });
             }
         }
-
-        return new Response('success');
     }
 
-    // Handle GET requests (Linux DO Credit sends GET)
-    export async function GET(request: Request) {
-        console.log("[Notify] Received GET callback");
+    return new Response('success');
+}
 
-        try {
-            const url = new URL(request.url);
-            const params: Record<string, any> = {};
-            url.searchParams.forEach((value, key) => {
-                params[key] = value;
-            });
+// Handle GET requests (Linux DO Credit sends GET)
+export async function GET(request: Request) {
+    console.log("[Notify] Received GET callback");
 
-            return await processNotify(params);
-        } catch (e) {
-            console.error("[Notify] Error:", e);
-            return new Response('error', { status: 500 });
-        }
+    try {
+        const url = new URL(request.url);
+        const params: Record<string, any> = {};
+        url.searchParams.forEach((value, key) => {
+            params[key] = value;
+        });
+
+        return await processNotify(params);
+    } catch (e) {
+        console.error("[Notify] Error:", e);
+        return new Response('error', { status: 500 });
     }
+}
 
-    // Also handle POST requests for compatibility
-    export async function POST(request: Request) {
-        console.log("[Notify] Received POST callback");
+// Also handle POST requests for compatibility
+export async function POST(request: Request) {
+    console.log("[Notify] Received POST callback");
 
-        try {
-            const formData = await request.formData();
-            const params: Record<string, any> = {};
-            formData.forEach((value, key) => {
-                params[key] = value;
-            });
+    try {
+        const formData = await request.formData();
+        const params: Record<string, any> = {};
+        formData.forEach((value, key) => {
+            params[key] = value;
+        });
 
-            return await processNotify(params);
-        } catch (e) {
-            console.error("[Notify] Error:", e);
-            return new Response('error', { status: 500 });
-        }
+        return await processNotify(params);
+    } catch (e) {
+        console.error("[Notify] Error:", e);
+        return new Response('error', { status: 500 });
     }
+}
