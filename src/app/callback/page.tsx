@@ -1,12 +1,15 @@
-import { CallbackContent } from "@/components/callback-content";
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
-export default async function CallbackPage({
-    searchParams,
-}: {
-    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
-}) {
-    const params = await searchParams;
-    // This page only runs if the path-based callback failed or wasn't used.
-    // It serves as a debug view for missing parameters.
-    return <CallbackContent params={params} />
+export default async function CallbackPage() {
+    // Read pending order from cookie (set during checkout)
+    const cookieStore = await cookies();
+    const orderId = cookieStore.get('ldc_pending_order')?.value;
+
+    if (orderId) {
+        redirect(`/order/${orderId}`);
+    }
+
+    // If no cookie found, go to orders list
+    redirect('/orders');
 }
