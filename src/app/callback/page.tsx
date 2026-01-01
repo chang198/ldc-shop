@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
 export default async function CallbackPage({
     searchParams,
@@ -6,11 +7,24 @@ export default async function CallbackPage({
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
     const params = await searchParams
-    const orderId = params.out_trade_no;
+
+    // Try to get order ID from query params first
+    let orderId = params.out_trade_no;
+
+    // If not in params, try to get from cookie (set during checkout)
+    if (!orderId) {
+        const cookieStore = await cookies();
+        orderId = cookieStore.get('ldc_pending_order')?.value;
+        // Clear the cookie
+        if (orderId) {
+            cookieStore.delete('ldc_pending_order');
+        }
+    }
 
     if (orderId && typeof orderId === 'string') {
         redirect(`/order/${orderId}`);
     }
 
+    // Fallback to home if no order ID found
     redirect('/');
 }
