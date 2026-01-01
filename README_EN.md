@@ -6,6 +6,8 @@
 
 A robust, serverless virtual goods shop built with **Next.js 16**, **Vercel Postgres**, **Shadcn UI**, and **Linux DO Connect**.
 
+> 💡 **Also available as Cloudflare Workers version:** [View legacy deployment guide → `_legacy/README.md`](./_legacy/README.md)
+
 ## ✨ Features
 - **Modern Stack**: Next.js 16 (App Router), Tailwind CSS, TypeScript.
 - **Vercel Native**: One-click deploy with Vercel Postgres database.

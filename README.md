@@ -6,6 +6,8 @@
 
 基于 **Next.js 16**、**Vercel Postgres**、**Shadcn UI** 和 **Linux DO Connect** 构建的强大的无服务器虚拟商品商店。
 
+> 💡 **也提供 Cloudflare Workers 版本：** [查看旧版部署指南 → `_legacy/README.md`](./_legacy/README.md)
+
 ## ✨ 特性
 - **现代技术栈**: Next.js 16 (App Router), Tailwind CSS, TypeScript.
 - **Vercel 原生**: 一键部署，自动配置 Vercel Postgres 数据库。
