@@ -50,7 +50,7 @@ export async function createOrder(productId: string, email?: string) {
         type: 'epay',
         out_trade_no: orderId,
         notify_url: `${baseUrl}/api/notify`,
-        return_url: `${baseUrl}/callback`, // or just return to home/history
+        return_url: `${baseUrl}/callback?out_trade_no=${orderId}`, // explicitly append orderId to avoid session/cookie race conditions
         name: product.name,
         money: Number(product.price).toFixed(2),
         sign_type: 'MD5'

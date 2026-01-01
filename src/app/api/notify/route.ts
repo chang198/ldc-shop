@@ -39,37 +39,45 @@ async function processNotify(params: Record<string, any>) {
         console.log("[Notify] Order found:", order ? "YES" : "NO", "status:", order?.status);
 
         if (order && order.status === 'pending') {
-            // Find Unused Card
-            const card = await db.query.cards.findFirst({
-                where: sql`${cards.productId} = ${order.productId} AND ${cards.isUsed} = false`
-            });
+            await db.transaction(async (tx) => {
+                // Atomic update to claim card (Postgres only)
+                // Finds the first unused card, locks it, and marks it as used
+                const result = await tx.execute(sql`
+                    UPDATE cards
+                    SET is_used = true, used_at = NOW()
+                    WHERE id = (
+                        SELECT id
+                        FROM cards
+                        WHERE product_id = ${order.productId} AND is_used = false
+                        LIMIT 1
+                        FOR UPDATE SKIP LOCKED
+                    )
+                    RETURNING card_key
+                `);
 
-            console.log("[Notify] Available card:", card ? "YES" : "NO");
+                const cardKey = result.rows[0]?.card_key as string | undefined;
 
-            if (card) {
-                await db.transaction(async (tx) => {
-                    await tx.update(cards)
-                        .set({ isUsed: true, usedAt: new Date() })
-                        .where(eq(cards.id, card.id));
+                console.log("[Notify] Card claimed:", cardKey ? "YES" : "NO");
 
+                if (cardKey) {
                     await tx.update(orders)
                         .set({
                             status: 'delivered',
                             paidAt: new Date(),
                             deliveredAt: new Date(),
                             tradeNo: tradeNo,
-                            cardKey: card.cardKey
+                            cardKey: cardKey
                         })
                         .where(eq(orders.orderId, orderId));
-                });
-                console.log("[Notify] Order delivered successfully!");
-            } else {
-                // Paid but no stock
-                await db.update(orders)
-                    .set({ status: 'paid', paidAt: new Date(), tradeNo: tradeNo })
-                    .where(eq(orders.orderId, orderId));
-                console.log("[Notify] Order marked as paid (no stock)");
-            }
+                    console.log("[Notify] Order delivered successfully!");
+                } else {
+                    // Paid but no stock
+                    await tx.update(orders)
+                        .set({ status: 'paid', paidAt: new Date(), tradeNo: tradeNo })
+                        .where(eq(orders.orderId, orderId));
+                    console.log("[Notify] Order marked as paid (no stock)");
+                }
+            });
         }
     }
 

@@ -11,12 +11,8 @@ export default async function CallbackPage({
     // Try to get order ID from query params first
     let orderId = params.out_trade_no;
 
-    // If not in params, try to get from cookie (set during checkout)
-    if (!orderId) {
-        const cookieStore = await cookies();
-        orderId = cookieStore.get('ldc_pending_order')?.value;
-        // Note: Cannot delete cookie in Server Component, it will expire naturally or be overwritten on next order
-    }
+    // If not in params, fallback to history or home
+    // We do NOT use cookies here to avoid race conditions with multiple tabs
 
     if (orderId && typeof orderId === 'string') {
         redirect(`/order/${orderId}`);
