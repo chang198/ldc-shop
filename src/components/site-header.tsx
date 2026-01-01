@@ -26,9 +26,9 @@ export async function SiteHeader() {
         <header className="sticky top-0 z-40 w-full border-b bg-background">
             <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
                 <div className="flex gap-6 md:gap-10">
-                    <Link href="/" className="flex items-center space-x-2">
-                        <ShoppingBag className="h-7 w-7 text-primary" />
-                        <span className="inline-block font-bold text-xl tracking-tight">LDC Shop</span>
+                    <Link href="/" className="flex items-center space-x-2 group">
+                        <ShoppingBag className="h-5 w-5 text-primary transition-transform group-hover:scale-110" />
+                        <span className="font-semibold text-base tracking-tight">LDC Shop</span>
                     </Link>
                     <HeaderNav isAdmin={isAdmin} />
                 </div>
