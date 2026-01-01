@@ -26,7 +26,7 @@ export async function SiteHeader() {
         <header className="sticky top-0 z-40 w-full border-b bg-background">
             <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
                 <div className="flex gap-6 md:gap-10">
-                    <Link href="/" className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/5 hover:bg-primary/10 transition-colors">
+                    <Link href="/" className="flex items-center gap-1.5">
                         <ShoppingBag className="h-4 w-4 text-primary" />
                         <span className="text-sm font-medium">LDC</span>
                     </Link>
