@@ -15,10 +15,7 @@ export default async function CallbackPage({
     if (!orderId) {
         const cookieStore = await cookies();
         orderId = cookieStore.get('ldc_pending_order')?.value;
-        // Clear the cookie
-        if (orderId) {
-            cookieStore.delete('ldc_pending_order');
-        }
+        // Note: Cannot delete cookie in Server Component, it will expire naturally or be overwritten on next order
     }
 
     if (orderId && typeof orderId === 'string') {
