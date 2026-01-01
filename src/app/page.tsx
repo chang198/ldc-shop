@@ -1,4 +1,4 @@
-import { getProducts } from "@/lib/db/queries";
+import { getActiveProducts } from "@/lib/db/queries";
 import { HomeContent } from "@/components/home-content";
 
 export const dynamic = 'force-dynamic';
@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 export default async function Home() {
   let products: any[] = [];
   try {
-    products = await getProducts();
+    products = await getActiveProducts();
   } catch (error: any) {
     const errorString = JSON.stringify(error);
     const isTableMissing =
@@ -55,7 +55,7 @@ export default async function Home() {
         );
       `);
 
-      products = await getProducts();
+      products = await getActiveProducts();
     } else {
       throw error;
     }

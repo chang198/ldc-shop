@@ -77,6 +77,11 @@
             "price": "价格",
             "category": "分类",
             "stock": "库存",
+            "status": "状态",
+            "active": "上架",
+            "inactive": "下架",
+            "hide": "下架",
+            "show": "上架",
             "actions": "操作",
             "manageCards": "卡密",
             "confirmDelete": "确定要删除此商品吗？"

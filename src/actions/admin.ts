@@ -45,6 +45,13 @@ export async function deleteProduct(id: string) {
     revalidatePath('/')
 }
 
+export async function toggleProductStatus(id: string, isActive: boolean) {
+    await checkAdmin()
+    await db.update(products).set({ isActive }).where(eq(products.id, id))
+    revalidatePath('/admin')
+    revalidatePath('/')
+}
+
 export async function addCards(formData: FormData) {
     await checkAdmin()
     const productId = formData.get('product_id') as string

@@ -12,7 +12,8 @@ export default async function AdminPage() {
                 name: p.name,
                 price: p.price,
                 category: p.category,
-                stockCount: p.stock
+                stockCount: p.stock,
+                isActive: p.isActive ?? true
             }))}
         />
     )

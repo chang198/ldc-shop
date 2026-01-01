@@ -1,8 +1,26 @@
 import { db } from "./index";
 import { products, cards, orders } from "./schema";
-import { eq, sql, desc } from "drizzle-orm";
+import { eq, sql, desc, and } from "drizzle-orm";
 
 export async function getProducts() {
+    return await db.select({
+        id: products.id,
+        name: products.name,
+        description: products.description,
+        price: products.price,
+        image: products.image,
+        category: products.category,
+        isActive: products.isActive,
+        stock: sql<number>`count(case when ${cards.isUsed} = false then 1 end)::int`,
+        sold: sql<number>`count(case when ${cards.isUsed} = true then 1 end)::int`
+    })
+        .from(products)
+        .leftJoin(cards, eq(products.id, cards.productId))
+        .groupBy(products.id);
+}
+
+// Get only active products (for home page)
+export async function getActiveProducts() {
     return await db.select({
         id: products.id,
         name: products.name,
@@ -15,6 +33,7 @@ export async function getProducts() {
     })
         .from(products)
         .leftJoin(cards, eq(products.id, cards.productId))
+        .where(eq(products.isActive, true))
         .groupBy(products.id);
 }
 

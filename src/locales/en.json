@@ -77,6 +77,11 @@
             "price": "Price",
             "category": "Category",
             "stock": "Stock",
+            "status": "Status",
+            "active": "Active",
+            "inactive": "Inactive",
+            "hide": "Hide",
+            "show": "Show",
             "actions": "Actions",
             "manageCards": "Cards",
             "confirmDelete": "Are you sure you want to delete this product?"
