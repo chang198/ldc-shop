@@ -53,7 +53,10 @@ export function CopyButton({ text, label, truncate = false, maxLength = 20, ...p
     return (
         <div className="flex items-center gap-2">
             {label && <span className="text-muted-foreground">{label}</span>}
-            <code className="bg-muted px-2 py-1 rounded text-sm font-mono break-all whitespace-pre-wrap">
+            <code
+                className="bg-muted px-2 py-1 rounded text-sm font-mono break-all whitespace-pre-wrap cursor-default"
+                title={truncate && text.length > maxLength ? text : undefined}
+            >
                 {displayText}
             </code>
             <Button
