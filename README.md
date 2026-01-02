@@ -22,6 +22,15 @@
 
 数据库 (Vercel Postgres) 将会自动配置并链接。
 
+## ⚠️ 重要：必须绑定自定义域名
+
+**请勿使用 Vercel 提供的默认域名 (`*.vercel.app`) 进行生产环境部署！**
+
+由于 `vercel.app` 是共享域名，常被防火墙或支付平台列入低信誉名单，会导致 **支付回调 (Notify) 请求被拦截**，从而出现"支付成功但订单状态未更新"的问题。
+
+**解决方案：**
+部署后，请务必在 Vercel控制台绑定一个**自定义域名**（如 `store.yourdomain.com`），并使用该域名配置 `NEXT_PUBLIC_APP_URL` 和支付平台的通知地址。
+
 ## ⚠️ 重要：关于退款拦截问题 (Refund WAF Issue)
 
 Linux DO Credit 的退款 API 受到 Cloudflare WAF 的严格保护，直接从服务器端发起请求可能会被拦截（报错 403 Forbidden）。

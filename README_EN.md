@@ -22,6 +22,15 @@ Click the button above to deploy your own instance to Vercel.
 
 The database (Vercel Postgres) will be automatically provisioned and linked.
 
+## ⚠️ Important: Custom Domain Required
+
+**Do NOT use the default Vercel domain (`*.vercel.app`) for production!**
+
+Resulting from the shared nature of `vercel.app` domains, they are often flagged by firewalls or payment gateways as low-reputation. This will cause **Payment Callback (Notify) requests to be blocked**, leading to "Payment Success but Order Pending" issues.
+
+**Solution:**
+After deployment, you MUST bind a **Custom Domain** (e.g., `store.yourdomain.com`) in the Vercel dashboard and use this domain for `NEXT_PUBLIC_APP_URL` and the payment gateway notification URL.
+
 ## ⚠️ Important: Refund WAF Issue
 
 The Refund API of Linux DO Credit is strictly protected by Cloudflare WAF. Direct server-side requests may be blocked (403 Forbidden).
