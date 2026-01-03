@@ -26,10 +26,10 @@ export function HomeContent({ products }: { products: Product[] }) {
             <section className="mb-16 space-y-4 text-center relative">
                 <div className="absolute inset-0 -z-10 bg-gradient-to-b from-primary/5 via-transparent to-transparent rounded-3xl" />
                 <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl gradient-text py-2">
-                    {t('common.appName')}
+                    WanDouYu
                 </h1>
                 <p className="mx-auto max-w-[600px] text-muted-foreground text-sm md:text-base">
-                    {t('home.subtitle')}
+                     购买后使用请仔细检查确认！
                 </p>
                 <div className="flex justify-center gap-2 pt-2">
                     <div className="h-1 w-12 rounded-full bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
