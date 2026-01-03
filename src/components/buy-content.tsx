@@ -78,9 +78,14 @@ export function BuyContent({ product, stockCount, isLoggedIn }: BuyContentProps)
                             <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
                                 {t('buy.description') || 'Description'}
                             </h3>
-                            <p className="text-foreground/80 leading-relaxed whitespace-pre-wrap break-words">
-                                {product.description || t('buy.noDescription')}
-                            </p>
+                            {product.description ? (
+                                <div 
+                                    className="text-foreground/80 leading-relaxed prose prose-sm dark:prose-invert max-w-none"
+                                    dangerouslySetInnerHTML={{ __html: product.description }}
+                                />
+                            ) : (
+                                <p className="text-muted-foreground">{t('buy.noDescription')}</p>
+                            )}
                         </div>
                     </CardContent>
 
