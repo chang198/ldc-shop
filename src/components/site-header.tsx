@@ -30,7 +30,7 @@ export async function SiteHeader() {
                         <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center group-hover:shadow-lg group-hover:shadow-primary/25 transition-all duration-300">
                             <ShoppingBag className="h-4 w-4 text-primary-foreground" />
                         </div>
-                        <span className="text-sm font-semibold tracking-tight gradient-text">LDC</span>
+                        <span className="text-sm font-semibold tracking-tight gradient-text">WanDouYu</span>
                     </Link>
                     <HeaderNav isAdmin={isAdmin} />
                 </div>
