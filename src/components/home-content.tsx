@@ -21,59 +21,90 @@ export function HomeContent({ products }: { products: Product[] }) {
     const { t } = useI18n()
 
     return (
-        <main className="container py-8 md:py-12">
-            <section className="mb-10 space-y-3 text-center">
-                <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl text-foreground">
+        <main className="container py-8 md:py-16">
+            {/* Hero Section */}
+            <section className="mb-16 space-y-4 text-center relative">
+                <div className="absolute inset-0 -z-10 bg-gradient-to-b from-primary/5 via-transparent to-transparent rounded-3xl" />
+                <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl gradient-text py-2">
                     {t('common.appName')}
                 </h1>
-                <p className="mx-auto max-w-[500px] text-muted-foreground text-sm">
+                <p className="mx-auto max-w-[600px] text-muted-foreground text-sm md:text-base">
                     {t('home.subtitle')}
                 </p>
+                <div className="flex justify-center gap-2 pt-2">
+                    <div className="h-1 w-12 rounded-full bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+                </div>
             </section>
 
             {products.length === 0 ? (
-                <div className="text-center py-16">
-                    <p className="text-muted-foreground">{t('home.noProducts')}</p>
-                    <p className="text-sm text-muted-foreground mt-2">{t('home.checkBackLater')}</p>
+                <div className="text-center py-20">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-muted/50 mb-4">
+                        <svg className="w-8 h-8 text-muted-foreground/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                        </svg>
+                    </div>
+                    <p className="text-muted-foreground font-medium">{t('home.noProducts')}</p>
+                    <p className="text-sm text-muted-foreground/60 mt-2">{t('home.checkBackLater')}</p>
                 </div>
             ) : (
                 <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {products.map((product) => (
-                        <Card key={product.id} className="overflow-hidden flex flex-col hover:shadow-lg transition-shadow">
-                            <div className="aspect-video bg-muted/50 relative">
+                    {products.map((product, index) => (
+                        <Card
+                            key={product.id}
+                            className="group overflow-hidden flex flex-col tech-card animate-fade-in"
+                            style={{ animationDelay: `${index * 50}ms` }}
+                        >
+                            {/* Image Section */}
+                            <div className="aspect-[4/3] bg-gradient-to-br from-muted/30 to-muted/10 relative overflow-hidden">
                                 <img
                                     src={product.image || `https://api.dicebear.com/7.x/shapes/svg?seed=${product.id}`}
                                     alt={product.name}
-                                    className="object-cover w-full h-full"
+                                    className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
                                 />
+                                {/* Overlay gradient */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                                 {product.category && product.category !== 'general' && (
-                                    <Badge className="absolute top-2 right-2 capitalize">
+                                    <Badge className="absolute top-3 right-3 capitalize bg-background/80 backdrop-blur-sm border-border/50 text-foreground">
                                         {product.category}
                                     </Badge>
                                 )}
                             </div>
-                            <CardContent className="flex-1 p-4">
-                                <h3 className="font-semibold text-lg mb-2">{product.name}</h3>
-                                <p className="text-muted-foreground text-sm line-clamp-2">
+
+                            {/* Content Section */}
+                            <CardContent className="flex-1 p-5">
+                                <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors duration-300">
+                                    {product.name}
+                                </h3>
+                                <p className="text-muted-foreground text-sm line-clamp-2 leading-relaxed">
                                     {product.description || t('buy.noDescription')}
                                 </p>
                             </CardContent>
-                            <CardFooter className="p-4 pt-0 flex items-center justify-between">
+
+                            {/* Footer Section */}
+                            <CardFooter className="p-5 pt-0 flex items-end justify-between gap-4">
                                 <div>
-                                    <span className="text-2xl font-bold">{Number(product.price)}</span>
-                                    <span className="text-muted-foreground ml-1">{t('common.credits')}</span>
+                                    <span className="text-3xl font-bold gradient-text">{Number(product.price)}</span>
+                                    <span className="text-muted-foreground text-sm ml-1.5">{t('common.credits')}</span>
                                 </div>
-                                <div className="flex flex-col items-end gap-1">
-                                    <div className="flex gap-2">
-                                        <Badge variant="outline" className="text-muted-foreground">
+                                <div className="flex flex-col items-end gap-2">
+                                    <div className="flex gap-1.5">
+                                        <Badge variant="outline" className="text-xs text-muted-foreground border-border/50">
                                             {t('common.sold')}: {product.soldCount}
                                         </Badge>
-                                        <Badge variant={product.stockCount > 0 ? "secondary" : "destructive"}>
+                                        <Badge
+                                            variant={product.stockCount > 0 ? "secondary" : "destructive"}
+                                            className={product.stockCount > 0 ? "text-xs" : "text-xs"}
+                                        >
                                             {product.stockCount > 0 ? `${t('common.stock')}: ${product.stockCount}` : t('common.outOfStock')}
                                         </Badge>
                                     </div>
                                     <Link href={`/buy/${product.id}`}>
-                                        <Button size="sm">{t('common.viewDetails')}</Button>
+                                        <Button
+                                            size="sm"
+                                            className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20"
+                                        >
+                                            {t('common.viewDetails')}
+                                        </Button>
                                     </Link>
                                 </div>
                             </CardFooter>
