@@ -52,7 +52,7 @@ export async function SiteHeader() {
     }
 
     return (
-        <header className="sticky top-0 z-40 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
+        <header className="sticky top-0 z-40 w-full border-b border-border/40 bg-gradient-to-b from-background/90 via-background/75 to-background/60 backdrop-blur-xl shadow-sm supports-[backdrop-filter]:bg-background/70">
             <div className="container flex h-16 items-center gap-3">
                 <div className="flex items-center gap-4 md:gap-8 min-w-0">
                     <HeaderLogo adminName={firstAdminName} shopNameOverride={shopNameOverride} shopLogoOverride={shopLogoOverride} />
@@ -62,13 +62,14 @@ export async function SiteHeader() {
                     {/* HeaderSearch removed as per user request */}
                 </div>
                 <div className="flex items-center justify-end gap-2 md:gap-3">
-                    <nav className="flex items-center space-x-2">
+                    <nav className="flex items-center space-x-2 rounded-full border border-border/40 bg-muted/30 px-2 py-1 shadow-sm">
                         {user && <CheckInButton enabled={checkinEnabled} />}
                         <LanguageSwitcher />
+                        <ModeToggle />
                         {user ? (
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                                    <Button variant="ghost" className="relative h-8 w-8 rounded-full bg-background/70 hover:bg-background/90 transition-transform duration-200 hover:-translate-y-0.5">
                                         <Avatar className="h-8 w-8">
                                             <AvatarImage src={user.avatar_url || ''} alt={user.name || ''} />
                                             <AvatarFallback><User className="h-4 w-4" /></AvatarFallback>
@@ -91,7 +92,6 @@ export async function SiteHeader() {
                         ) : (
                             <SignInButton />
                         )}
-                        <ModeToggle />
                     </nav>
                 </div>
             </div>

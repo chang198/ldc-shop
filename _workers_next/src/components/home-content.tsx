@@ -57,9 +57,11 @@ export async function HomeContent({ products, announcement, visitorCount, catego
         <main className="container py-8 md:py-16 relative overflow-hidden">
             {/* Atmosphere background */}
             <div className="pointer-events-none absolute inset-0 -z-10">
-                <div className="absolute -top-32 left-1/2 h-72 w-[85vw] -translate-x-1/2 rounded-full bg-gradient-to-r from-amber-200/30 via-sky-200/20 to-emerald-200/30 blur-3xl" />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(0,0,0,0.04),_transparent_55%)] dark:bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.06),_transparent_55%)]" />
-                <div className="absolute inset-0 opacity-[0.06] [background-image:radial-gradient(#000000_1px,transparent_1px)] [background-size:18px_18px] dark:[background-image:radial-gradient(#ffffff_1px,transparent_1px)]" />
+                <div className="absolute -top-40 left-1/2 h-80 w-[90vw] -translate-x-1/2 rounded-full bg-gradient-to-r from-primary/20 via-sky-200/15 to-emerald-200/20 blur-3xl" />
+                <div className="absolute top-6 left-[12%] h-44 w-72 rounded-full bg-primary/15 blur-3xl" />
+                <div className="absolute top-12 right-[10%] h-40 w-64 rounded-full bg-sky-200/20 blur-3xl dark:bg-sky-200/10" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(0,0,0,0.035),_transparent_60%)] dark:bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.05),_transparent_60%)]" />
+                <div className="absolute inset-0 opacity-[0.035] [background-image:radial-gradient(#000000_1px,transparent_1px)] [background-size:20px_20px] dark:[background-image:radial-gradient(#ffffff_1px,transparent_1px)]" />
             </div>
 
             {/* Announcement Banner */}

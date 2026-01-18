@@ -19,11 +19,11 @@ export function HeaderLogo({ adminName, shopNameOverride, shopLogoOverride }: { 
         : t('common.appName')
 
     return (
-        <Link href="/" className="flex items-center gap-2 min-w-0 group text-muted-foreground hover:text-primary transition-colors">
+        <Link href="/" className="flex items-center gap-2 min-w-0 group text-muted-foreground hover:text-primary transition-colors duration-200 hover:-translate-y-0.5">
             {logoUrl ? (
                 <img src={logoUrl} alt="Logo" className="h-8 w-8 rounded-lg object-contain" />
             ) : (
-                <div className="h-8 w-8 rounded-lg bg-foreground flex items-center justify-center transition-all duration-300">
+                <div className="h-8 w-8 rounded-lg bg-foreground flex items-center justify-center transition-all duration-300 shadow-sm group-hover:shadow-md">
                     <ShoppingBag className="h-4 w-4 text-background" />
                 </div>
             )}
@@ -42,7 +42,7 @@ export function HeaderNav({ isAdmin, isLoggedIn }: { isAdmin: boolean; isLoggedI
         <div className="hidden md:flex items-center gap-6">
             <Link
                 href="/nav"
-                className="flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                className="flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors duration-200 hover:-translate-y-0.5"
             >
                 {t('common.navigator')}
             </Link>
@@ -50,7 +50,7 @@ export function HeaderNav({ isAdmin, isLoggedIn }: { isAdmin: boolean; isLoggedI
                 <>
                     <Link
                         href="/profile"
-                        className="flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                        className="flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors duration-200 hover:-translate-y-0.5"
                     >
                         {isZh ? "个人中心" : "Profile"}
                     </Link>
@@ -59,7 +59,7 @@ export function HeaderNav({ isAdmin, isLoggedIn }: { isAdmin: boolean; isLoggedI
             {isAdmin && (
                 <Link
                     href="/admin/settings"
-                    className="flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                    className="flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors duration-200 hover:-translate-y-0.5"
                 >
                     {t('common.admin')}
                 </Link>
