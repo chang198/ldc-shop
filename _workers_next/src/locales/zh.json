@@ -561,6 +561,7 @@
     },
     "checkin": {
         "button": "签到",
+        "checkedIn": "已签到",
         "success": "签到成功！+{{points}} 积分",
         "alreadyCheckedIn": "今天已签到",
         "failed": "签到失败",

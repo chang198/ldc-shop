@@ -561,6 +561,7 @@
     },
     "checkin": {
         "button": "Check In",
+        "checkedIn": "Checked in",
         "success": "Check-in successful! +{{points}} points",
         "alreadyCheckedIn": "Already checked in today",
         "failed": "Check-in failed",

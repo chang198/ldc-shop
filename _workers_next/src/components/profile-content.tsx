@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { updateProfileEmail } from "@/actions/profile"
 import { useState } from "react"
+import { CheckInButton } from "@/components/checkin-button"
 
 interface ProfileContentProps {
     user: {
@@ -23,6 +24,7 @@ interface ProfileContentProps {
         email: string | null
     }
     points: number
+    checkinEnabled: boolean
     orderStats: {
         total: number
         pending: number
@@ -37,10 +39,11 @@ interface ProfileContentProps {
     }>
 }
 
-export function ProfileContent({ user, points, orderStats, recentOrders }: ProfileContentProps) {
+export function ProfileContent({ user, points, checkinEnabled, orderStats, recentOrders }: ProfileContentProps) {
     const { t } = useI18n()
     const [email, setEmail] = useState(user.email || '')
     const [savingEmail, setSavingEmail] = useState(false)
+    const [pointsValue, setPointsValue] = useState(points)
 
     const getStatusBadge = (status: string | null) => {
         switch (status) {
@@ -133,9 +136,16 @@ export function ProfileContent({ user, points, orderStats, recentOrders }: Profi
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">{t('common.credits')}</p>
-                                <p className="text-2xl font-bold text-amber-600">{points}</p>
+                                <p className="text-2xl font-bold text-amber-600">{pointsValue}</p>
                             </div>
                         </div>
+                        <CheckInButton
+                            enabled={checkinEnabled}
+                            showPoints={false}
+                            showCheckedInLabel
+                            className="shrink-0"
+                            onPointsChange={setPointsValue}
+                        />
                     </div>
                 </CardContent>
             </Card>

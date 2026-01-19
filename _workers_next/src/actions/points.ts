@@ -3,7 +3,7 @@
 import { auth } from "@/lib/auth"
 import { db } from "@/lib/db"
 import { dailyCheckins, loginUsers } from "@/lib/db/schema"
-import { getSetting } from "@/lib/db/queries"
+import { getSetting, setSetting } from "@/lib/db/queries"
 import { eq, sql } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
 
@@ -22,6 +22,7 @@ export async function checkIn() {
     const userId = session.user.id
 
     try {
+        await migrateDailyCheckinsToMsOnce()
         // Store and compare timestamps in milliseconds.
         const now = new Date();
         const startOfDayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
@@ -87,6 +88,34 @@ async function ensureDailyCheckinsTable() {
 function isMissingTable(error: any) {
     const check = (e: any) => e?.message?.includes('does not exist') || e?.code === '42P01' || e?.message?.includes('no such table')
     return check(error) || (error?.cause && check(error.cause))
+}
+
+const CHECKINS_MS_MIGRATION_KEY = 'daily_checkins_v2_ms_migrated'
+
+async function migrateDailyCheckinsToMsOnce() {
+    const migrated = await getSetting(CHECKINS_MS_MIGRATION_KEY)
+    if (migrated === 'true') return
+
+    try {
+        const result: any = await db.run(sql`
+            SELECT id FROM daily_checkins_v2
+            WHERE created_at < 1000000000000
+            LIMIT 1
+        `)
+        const rows = result?.results || result?.rows || []
+        if (rows.length > 0) {
+            await db.run(sql`
+                UPDATE daily_checkins_v2
+                SET created_at = created_at * 1000
+                WHERE created_at < 1000000000000
+            `)
+        }
+
+        await setSetting(CHECKINS_MS_MIGRATION_KEY, 'true')
+    } catch (error: any) {
+        if (isMissingTable(error)) return
+        console.error('[CheckIn] migrate daily_checkins_v2 to ms failed:', error)
+    }
 }
 
 export async function getUserPoints() {

@@ -14,7 +14,7 @@ import { SignInButton } from "@/components/signin-button"
 import { SignOutButton } from "@/components/signout-button"
 import { HeaderLogo, HeaderNav, HeaderSearch, HeaderUserMenuItems, LanguageSwitcher } from "@/components/header-client-parts"
 import { ModeToggle } from "@/components/mode-toggle"
-import { getSetting, recordLoginUser } from "@/lib/db/queries"
+import { getSetting, recordLoginUser, setSetting } from "@/lib/db/queries"
 import { CheckInButton } from "@/components/checkin-button"
 
 export async function SiteHeader() {
@@ -41,6 +41,14 @@ export async function SiteHeader() {
     } catch {
         shopNameOverride = null
         shopLogoOverride = null
+    }
+    if (isAdmin && user?.avatar_url && (!shopLogoOverride || !shopLogoOverride.trim())) {
+        try {
+            await setSetting('shop_logo', user.avatar_url)
+            shopLogoOverride = user.avatar_url
+        } catch {
+            // best effort
+        }
     }
 
     let checkinEnabled = true
