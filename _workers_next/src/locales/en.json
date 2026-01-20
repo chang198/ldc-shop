@@ -46,6 +46,7 @@
         "dataExport": "Data Management",
         "categoriesManage": "Categories",
         "refundRequests": "Refund Requests",
+        "adminMessages": "Messages",
         "action": "Action",
         "actions": "Actions",
         "customers": "Customers",
@@ -137,7 +138,13 @@
         "reasonPlaceholder": "Reason (optional)...",
         "requestButton": "Request refund",
         "requested": "Refund request submitted",
-        "requestStatus": "Current status: {{status}}"
+        "requestStatus": "Current status: {{status}}",
+        "statusValues": {
+            "pending": "Pending",
+            "approved": "Approved",
+            "rejected": "Rejected",
+            "processed": "Processed"
+        }
     },
     "order": {
         "title": "Order Details",
@@ -196,6 +203,32 @@
         "writeReview": "Review"
     },
     "admin": {
+        "messages": {
+            "title": "Messages",
+            "compose": "Compose Message",
+            "targetType": "Target",
+            "allUsers": "All users",
+            "byUsername": "By username",
+            "byUserId": "By user ID",
+            "usernameLabel": "Username",
+            "userIdLabel": "User ID",
+            "usernamePlaceholder": "e.g. alice",
+            "userIdPlaceholder": "e.g. user_123",
+            "titleLabel": "Title",
+            "titlePlaceholder": "Enter a title",
+            "bodyLabel": "Message",
+            "bodyPlaceholder": "Enter message content...",
+            "send": "Send",
+            "sent": "Sent to {{count}} users",
+            "history": "Send history",
+            "empty": "No messages yet.",
+            "target": "Target",
+            "sender": "Sender",
+            "date": "Date",
+            "missing": "Title and message are required",
+            "invalidTarget": "Invalid target",
+            "userNotFound": "User not found"
+        },
         "settings": {
             "title": "Store Settings",
             "shopName": "Store Name",
@@ -544,6 +577,8 @@
         "inboxEmpty": "No notifications yet.",
         "markAllRead": "Mark all read",
         "inboxMarked": "All notifications marked as read",
+        "clearInbox": "Clear inbox",
+        "inboxCleared": "Inbox cleared",
         "unread": "Unread",
         "notifications": {
             "orderDeliveredTitle": "Order delivered",
@@ -551,7 +586,10 @@
             "refundApprovedTitle": "Refund approved",
             "refundApprovedBody": "Your refund request for order {{orderId}} has been approved.",
             "refundRejectedTitle": "Refund rejected",
-            "refundRejectedBody": "Your refund request for order {{orderId}} was rejected."
+            "refundRejectedBody": "Your refund request for order {{orderId}} was rejected.",
+            "refundRejectedBodyWithNote": "Your refund request for order {{orderId}} was rejected. Note: {{adminNote}}",
+            "adminMessageTitle": "Admin message",
+            "adminMessageBody": "{{body}}"
         }
     },
     "language": {
@@ -621,7 +659,7 @@
         "statusNotJoined": "Not joined",
         "resubmit": "Resubmit",
         "navTitle": "LDC Navigator",
-        "navSubtitle": "Discover stores built with LDC Shop",
+        "navSubtitle": "Discover more stores built with the ldc-shop project",
         "navSearch": "Search stores...",
         "search": "Search",
         "navEmpty": "No stores yet.",

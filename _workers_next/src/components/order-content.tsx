@@ -324,7 +324,7 @@ export function OrderContent({ order, canViewKey, isOwner, refundRequest }: Orde
                                 <h3 className="font-semibold">{t('refund.requestTitle')}</h3>
                                 {refundRequest?.status ? (
                                     <div className="text-sm text-muted-foreground">
-                                        {t('refund.requestStatus', { status: refundRequest.status })}
+                                        {t('refund.requestStatus', { status: t(`refund.statusValues.${refundRequest.status}`) })}
                                     </div>
                                 ) : (
                                     <div className="text-sm text-muted-foreground">

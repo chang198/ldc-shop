@@ -57,6 +57,9 @@ export function AdminRefundsContent({ requests }: { requests: any[] }) {
         await adminRejectRefund(id, note)
         toast.success(t('common.success'))
       }
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("ldc:refunds-updated"))
+      }
     } catch (e: any) {
       toast.error(e.message)
     }

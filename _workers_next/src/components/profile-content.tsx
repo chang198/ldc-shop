@@ -14,7 +14,8 @@ import { toast } from "sonner"
 import { updateProfileEmail } from "@/actions/profile"
 import { useEffect, useState } from "react"
 import { CheckInButton } from "@/components/checkin-button"
-import { getMyNotifications, markAllNotificationsRead, markNotificationRead } from "@/actions/user-notifications"
+import { clearMyNotifications, getMyNotifications, markAllNotificationsRead, markNotificationRead } from "@/actions/user-notifications"
+import { cn } from "@/lib/utils"
 
 interface ProfileContentProps {
     user: {
@@ -50,6 +51,8 @@ export function ProfileContent({ user, points, checkinEnabled, orderStats, notif
     const [notifications, setNotifications] = useState(initialNotifications)
     const [markingAll, setMarkingAll] = useState(false)
     const [markingId, setMarkingId] = useState<number | null>(null)
+    const [clearing, setClearing] = useState(false)
+    const [expandedIds, setExpandedIds] = useState<number[]>([])
 
     const unreadCount = notifications.filter((n) => !n.isRead).length
 
@@ -235,31 +238,58 @@ export function ProfileContent({ user, points, checkinEnabled, orderStats, notif
                             )}
                         </span>
                         {notifications.length > 0 && (
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                disabled={markingAll || unreadCount === 0}
-                                onClick={async () => {
-                                    if (markingAll || unreadCount === 0) return
-                                    setMarkingAll(true)
-                                    try {
-                                        const res = await markAllNotificationsRead()
-                                    if (res?.success) {
-                                        setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })))
-                                        emitNotificationUpdate()
-                                        toast.success(t('profile.inboxMarked'))
-                                    } else {
-                                        toast.error(t('common.error'))
-                                    }
-                                    } catch {
-                                        toast.error(t('common.error'))
-                                    } finally {
-                                        setMarkingAll(false)
-                                    }
-                                }}
-                            >
-                                {t('profile.markAllRead')}
-                            </Button>
+                            <div className="flex items-center gap-2">
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    disabled={markingAll || unreadCount === 0}
+                                    onClick={async () => {
+                                        if (markingAll || unreadCount === 0) return
+                                        setMarkingAll(true)
+                                        try {
+                                            const res = await markAllNotificationsRead()
+                                            if (res?.success) {
+                                                setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })))
+                                                emitNotificationUpdate()
+                                                toast.success(t('profile.inboxMarked'))
+                                            } else {
+                                                toast.error(t('common.error'))
+                                            }
+                                        } catch {
+                                            toast.error(t('common.error'))
+                                        } finally {
+                                            setMarkingAll(false)
+                                        }
+                                    }}
+                                >
+                                    {t('profile.markAllRead')}
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    disabled={clearing}
+                                    onClick={async () => {
+                                        if (clearing) return
+                                        setClearing(true)
+                                        try {
+                                            const res = await clearMyNotifications()
+                                            if (res?.success) {
+                                                setNotifications([])
+                                                emitNotificationUpdate()
+                                                toast.success(t('profile.inboxCleared'))
+                                            } else {
+                                                toast.error(t('common.error'))
+                                            }
+                                        } catch {
+                                            toast.error(t('common.error'))
+                                        } finally {
+                                            setClearing(false)
+                                        }
+                                    }}
+                                >
+                                    {t('profile.clearInbox')}
+                                </Button>
+                            </div>
                         )}
                     </CardTitle>
                 </CardHeader>
@@ -271,9 +301,18 @@ export function ProfileContent({ user, points, checkinEnabled, orderStats, notif
                             {notifications.map((n) => {
                                 const meta = parseNotificationData(n.data)
                                 const params = meta.params || {}
-                                const title = t(n.titleKey, params)
-                                const content = t(n.contentKey, params)
+                                const title = typeof (meta as any).title === "string" && (meta as any).title.trim()
+                                    ? (meta as any).title
+                                    : t(n.titleKey, params)
+                                const content = typeof (meta as any).body === "string" && (meta as any).body.trim()
+                                    ? (meta as any).body
+                                    : t(n.contentKey, params)
                                 const time = n.createdAt ? new Date(n.createdAt).toLocaleString() : '-'
+                                const isExpanded = expandedIds.includes(n.id)
+                                const contentClass = cn(
+                                    "text-sm text-muted-foreground mt-1 break-words whitespace-pre-wrap",
+                                    !isExpanded ? "line-clamp-2" : ""
+                                )
                                 const body = (
                                     <div className={`rounded-lg border p-3 ${n.isRead ? "bg-muted/30" : "bg-primary/5 border-primary/30"}`}>
                                         <div className="flex items-start justify-between gap-3">
@@ -286,7 +325,7 @@ export function ProfileContent({ user, points, checkinEnabled, orderStats, notif
                                                         </Badge>
                                                     )}
                                                 </div>
-                                                <p className="text-sm text-muted-foreground mt-1 break-words">{content}</p>
+                                                <p className={contentClass}>{content}</p>
                                                 <p className="text-xs text-muted-foreground mt-2">{time}</p>
                                             </div>
                                             {meta.href && (
@@ -312,6 +351,9 @@ export function ProfileContent({ user, points, checkinEnabled, orderStats, notif
                                         key={n.id}
                                         onClick={() => {
                                             if (!n.isRead) void handleMarkRead(n.id)
+                                            setExpandedIds((prev) =>
+                                                prev.includes(n.id) ? prev.filter((x) => x !== n.id) : [...prev, n.id]
+                                            )
                                         }}
                                     >
                                         {body}

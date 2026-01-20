@@ -5,7 +5,7 @@ import { revalidateTag } from "next/cache";
 
 // Database initialization state
 let dbInitialized = false;
-const CURRENT_SCHEMA_VERSION = 2;
+const CURRENT_SCHEMA_VERSION = 3;
 
 async function safeAddColumn(table: string, column: string, definition: string) {
     try {
@@ -33,6 +33,7 @@ async function ensureIndexes() {
         `CREATE INDEX IF NOT EXISTS refund_requests_order_id_idx ON refund_requests(order_id)`,
         `CREATE INDEX IF NOT EXISTS user_notifications_user_created_idx ON user_notifications(user_id, created_at)`,
         `CREATE INDEX IF NOT EXISTS user_notifications_user_read_idx ON user_notifications(user_id, is_read, created_at)`,
+        `CREATE INDEX IF NOT EXISTS admin_messages_created_idx ON admin_messages(created_at)`,
     ];
 
     for (const statement of indexStatements) {
@@ -74,6 +75,7 @@ async function ensureDatabaseInitialized() {
         await ensureProductsColumns();
         await ensureLoginUsersTable();
         await ensureUserNotificationsTable();
+        await ensureAdminMessagesTable();
         await migrateTimestampColumnsToMs();
         await ensureIndexes();
         await backfillProductAggregates();
@@ -215,6 +217,17 @@ async function ensureDatabaseInitialized() {
             content_key TEXT NOT NULL,
             data TEXT,
             is_read INTEGER DEFAULT 0,
+            created_at INTEGER DEFAULT (unixepoch() * 1000)
+        );
+
+        -- Admin messages table
+        CREATE TABLE IF NOT EXISTS admin_messages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            target_type TEXT NOT NULL,
+            target_value TEXT,
+            title TEXT NOT NULL,
+            body TEXT NOT NULL,
+            sender TEXT,
             created_at INTEGER DEFAULT (unixepoch() * 1000)
         );
     `);
@@ -717,6 +730,20 @@ export async function markUserNotificationRead(userId: string, id: number) {
     }
 }
 
+export async function clearUserNotifications(userId: string) {
+    await ensureDatabaseInitialized()
+    try {
+        await db.delete(userNotifications)
+            .where(eq(userNotifications.userId, userId))
+    } catch (error: any) {
+        if (isMissingTable(error)) {
+            await ensureUserNotificationsTable()
+            return
+        }
+        throw error
+    }
+}
+
 export async function searchActiveProducts(params: {
     q?: string
     category?: string
@@ -968,6 +995,7 @@ async function migrateTimestampColumnsToMs() {
         { table: 'categories', columns: ['created_at', 'updated_at'] },
         { table: 'refund_requests', columns: ['created_at', 'updated_at', 'processed_at'] },
         { table: 'user_notifications', columns: ['created_at'] },
+        { table: 'admin_messages', columns: ['created_at'] },
     ];
 
     for (const { table, columns } of tableColumns) {
@@ -1017,6 +1045,20 @@ async function ensureUserNotificationsTable() {
             content_key TEXT NOT NULL,
             data TEXT,
             is_read INTEGER DEFAULT 0,
+            created_at INTEGER DEFAULT (unixepoch() * 1000)
+        )
+    `);
+}
+
+async function ensureAdminMessagesTable() {
+    await db.run(sql`
+        CREATE TABLE IF NOT EXISTS admin_messages(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            target_type TEXT NOT NULL,
+            target_value TEXT,
+            title TEXT NOT NULL,
+            body TEXT NOT NULL,
+            sender TEXT,
             created_at INTEGER DEFAULT (unixepoch() * 1000)
         )
     `);

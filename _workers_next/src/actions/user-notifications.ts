@@ -1,7 +1,7 @@
 "use server"
 
 import { auth } from "@/lib/auth"
-import { getUserNotifications, getUserUnreadNotificationCount, markAllUserNotificationsRead, markUserNotificationRead } from "@/lib/db/queries"
+import { clearUserNotifications, getUserNotifications, getUserUnreadNotificationCount, markAllUserNotificationsRead, markUserNotificationRead } from "@/lib/db/queries"
 
 export async function markAllNotificationsRead() {
     const session = await auth()
@@ -53,5 +53,16 @@ export async function markNotificationRead(id: number) {
     }
 
     await markUserNotificationRead(userId, id)
+    return { success: true }
+}
+
+export async function clearMyNotifications() {
+    const session = await auth()
+    const userId = session?.user?.id
+    if (!userId) {
+        return { success: false, error: "Unauthorized" }
+    }
+
+    await clearUserNotifications(userId)
     return { success: true }
 }

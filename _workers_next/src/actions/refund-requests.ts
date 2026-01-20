@@ -173,15 +173,17 @@ export async function adminRejectRefund(requestId: number, adminNote?: string) {
   }).where(eq(refundRequests.id, requestId))
 
   if (order?.userId) {
+    const note = (adminNote || "").trim()
     await createUserNotification({
       userId: order.userId,
       type: 'refund_rejected',
       titleKey: 'profile.notifications.refundRejectedTitle',
-      contentKey: 'profile.notifications.refundRejectedBody',
+      contentKey: note ? 'profile.notifications.refundRejectedBodyWithNote' : 'profile.notifications.refundRejectedBody',
       data: {
         params: {
           orderId: order.orderId,
-          productName: order.productName || 'Product'
+          productName: order.productName || 'Product',
+          adminNote: note ? note.slice(0, 200) : undefined
         },
         href: `/order/${order.orderId}`
       }
@@ -189,4 +191,13 @@ export async function adminRejectRefund(requestId: number, adminNote?: string) {
   }
 
   revalidatePath('/admin/refunds')
+}
+
+export async function getPendingRefundRequestCount() {
+  await checkAdmin()
+  await ensureRefundRequestsTable()
+  const rows = await db.select({
+    count: sql<number>`count(*)`
+  }).from(refundRequests).where(eq(refundRequests.status, 'pending'))
+  return { success: true, count: Number(rows[0]?.count || 0) }
 }

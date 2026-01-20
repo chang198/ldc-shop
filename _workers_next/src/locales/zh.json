@@ -46,6 +46,7 @@
         "dataExport": "数据管理",
         "categoriesManage": "分类管理",
         "refundRequests": "退款申请",
+        "adminMessages": "消息管理",
         "action": "操作",
         "actions": "操作",
         "customers": "顾客管理",
@@ -137,7 +138,13 @@
         "reasonPlaceholder": "退款原因（可选）...",
         "requestButton": "提交申请",
         "requested": "已提交退款申请",
-        "requestStatus": "当前状态：{{status}}"
+        "requestStatus": "当前状态：{{status}}",
+        "statusValues": {
+            "pending": "待处理",
+            "approved": "已同意",
+            "rejected": "已拒绝",
+            "processed": "已处理"
+        }
     },
     "order": {
         "title": "订单详情",
@@ -196,6 +203,32 @@
         "writeReview": "评价"
     },
     "admin": {
+        "messages": {
+            "title": "消息管理",
+            "compose": "发送消息",
+            "targetType": "发送对象",
+            "allUsers": "全部用户",
+            "byUsername": "按用户名",
+            "byUserId": "按用户ID",
+            "usernameLabel": "用户名",
+            "userIdLabel": "用户ID",
+            "usernamePlaceholder": "例如：alice",
+            "userIdPlaceholder": "例如：user_123",
+            "titleLabel": "标题",
+            "titlePlaceholder": "请输入标题",
+            "bodyLabel": "内容",
+            "bodyPlaceholder": "请输入消息内容...",
+            "send": "发送",
+            "sent": "已发送给 {{count}} 位用户",
+            "history": "发送历史",
+            "empty": "暂无消息",
+            "target": "目标",
+            "sender": "发送人",
+            "date": "时间",
+            "missing": "标题和内容不能为空",
+            "invalidTarget": "发送对象不正确",
+            "userNotFound": "用户不存在"
+        },
         "settings": {
             "title": "商店设置",
             "shopName": "商店名称",
@@ -544,6 +577,8 @@
         "inboxEmpty": "暂无通知",
         "markAllRead": "全部已读",
         "inboxMarked": "已标记全部为已读",
+        "clearInbox": "清空收件箱",
+        "inboxCleared": "收件箱已清空",
         "unread": "未读",
         "notifications": {
             "orderDeliveredTitle": "订单已发货",
@@ -551,7 +586,10 @@
             "refundApprovedTitle": "退款已通过",
             "refundApprovedBody": "您的订单 {{orderId}} 的退款申请已通过。",
             "refundRejectedTitle": "退款被拒绝",
-            "refundRejectedBody": "您的订单 {{orderId}} 的退款申请被拒绝。"
+            "refundRejectedBody": "您的订单 {{orderId}} 的退款申请被拒绝。",
+            "refundRejectedBodyWithNote": "您的订单 {{orderId}} 的退款申请被拒绝。备注：{{adminNote}}",
+            "adminMessageTitle": "管理员消息",
+            "adminMessageBody": "{{body}}"
         }
     },
     "language": {
@@ -621,7 +659,7 @@
         "statusNotJoined": "未加入",
         "resubmit": "重新提交",
         "navTitle": "LDC 导航",
-        "navSubtitle": "发现基于 LDC 商店搭建的网站",
+        "navSubtitle": "发现更多基于 ldc-shop 项目搭建的商城",
         "navSearch": "搜索站点...",
         "search": "搜索",
         "navEmpty": "暂无站点",

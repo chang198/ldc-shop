@@ -134,3 +134,14 @@ export const userNotifications = sqliteTable('user_notifications', {
     isRead: integer('is_read', { mode: 'boolean' }).default(false),
     createdAt: integer('created_at', { mode: 'timestamp_ms' }).$defaultFn(() => new Date()),
 });
+
+// Admin broadcast messages (history)
+export const adminMessages = sqliteTable('admin_messages', {
+    id: integer('id', { mode: 'number' }).primaryKey({ autoIncrement: true }),
+    targetType: text('target_type').notNull(),
+    targetValue: text('target_value'),
+    title: text('title').notNull(),
+    body: text('body').notNull(),
+    sender: text('sender'),
+    createdAt: integer('created_at', { mode: 'timestamp_ms' }).$defaultFn(() => new Date()),
+});
