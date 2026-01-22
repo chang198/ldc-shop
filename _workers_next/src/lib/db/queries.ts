@@ -523,60 +523,77 @@ export async function getActiveProducts() {
 
 export async function getWishlistItems(userId: string | null, limit = 10) {
     await ensureDatabaseInitialized();
-    await ensureWishlistTables();
 
-    const items = await db
-        .select({
-            id: wishlistItems.id,
-            title: wishlistItems.title,
-            description: wishlistItems.description,
-            username: wishlistItems.username,
-            createdAt: wishlistItems.createdAt,
-        })
-        .from(wishlistItems)
-        .orderBy(desc(wishlistItems.createdAt))
-        .limit(limit);
+    const fetchItems = async () => {
+        const items = await db
+            .select({
+                id: wishlistItems.id,
+                title: wishlistItems.title,
+                description: wishlistItems.description,
+                username: wishlistItems.username,
+                createdAt: wishlistItems.createdAt,
+            })
+            .from(wishlistItems)
+            .orderBy(desc(wishlistItems.createdAt))
+            .limit(limit);
 
-    if (!items.length) {
+        if (!items.length) {
+            return [];
+        }
+
+        const ids = items.map((row) => Number(row.id)).filter(Boolean);
+
+        const voteRows = await db
+            .select({
+                itemId: wishlistVotes.itemId,
+                count: sql<number>`COUNT(*)`
+            })
+            .from(wishlistVotes)
+            .where(inArray(wishlistVotes.itemId, ids))
+            .groupBy(wishlistVotes.itemId);
+
+        const voteMap = new Map<number, number>();
+        for (const row of voteRows) {
+            voteMap.set(Number(row.itemId), Number(row.count || 0));
+        }
+
+        let votedSet = new Set<number>();
+        if (userId) {
+            const userVotes = await db
+                .select({ itemId: wishlistVotes.itemId })
+                .from(wishlistVotes)
+                .where(and(inArray(wishlistVotes.itemId, ids), eq(wishlistVotes.userId, userId)));
+            votedSet = new Set(userVotes.map((row) => Number(row.itemId)));
+        }
+
+        return items
+            .map((row: any) => ({
+                id: Number(row.id),
+                title: row.title,
+                description: row.description,
+                username: row.username,
+                createdAt: Number(row.createdAt ?? 0),
+                votes: voteMap.get(Number(row.id)) || 0,
+                voted: votedSet.has(Number(row.id))
+            }))
+            .sort((a, b) => (b.votes - a.votes) || (b.createdAt - a.createdAt));
+    };
+
+    try {
+        return await fetchItems();
+    } catch (error: any) {
+        if (isMissingTableOrColumn(error)) {
+            await ensureWishlistTables();
+            try {
+                return await fetchItems();
+            } catch (retryError) {
+                console.error('getWishlistItems retry failed:', retryError);
+                return [];
+            }
+        }
+        console.error('getWishlistItems failed:', error);
         return [];
     }
-
-    const ids = items.map((row) => Number(row.id)).filter(Boolean);
-
-    const voteRows = await db
-        .select({
-            itemId: wishlistVotes.itemId,
-            count: sql<number>`COUNT(*)`
-        })
-        .from(wishlistVotes)
-        .where(inArray(wishlistVotes.itemId, ids))
-        .groupBy(wishlistVotes.itemId);
-
-    const voteMap = new Map<number, number>();
-    for (const row of voteRows) {
-        voteMap.set(Number(row.itemId), Number(row.count || 0));
-    }
-
-    let votedSet = new Set<number>();
-    if (userId) {
-        const userVotes = await db
-            .select({ itemId: wishlistVotes.itemId })
-            .from(wishlistVotes)
-            .where(and(inArray(wishlistVotes.itemId, ids), eq(wishlistVotes.userId, userId)));
-        votedSet = new Set(userVotes.map((row) => Number(row.itemId)));
-    }
-
-    return items
-        .map((row: any) => ({
-            id: Number(row.id),
-            title: row.title,
-            description: row.description,
-            username: row.username,
-            createdAt: Number(row.createdAt ?? 0),
-            votes: voteMap.get(Number(row.id)) || 0,
-            voted: votedSet.has(Number(row.id))
-        }))
-        .sort((a, b) => (b.votes - a.votes) || (b.createdAt - a.createdAt));
 }
 
 export async function getProduct(id: string) {
